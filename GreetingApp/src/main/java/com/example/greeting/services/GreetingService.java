@@ -28,4 +28,8 @@ public class GreetingService {
 //        MessageRepository.save(messageEntity); // saves the entity and returns it
         return modelMapper.map(messageRepository.save(messageEntity), MessageDTO.class);
     }
+
+    public MessageDTO findById(Long id) {
+        return modelMapper.map(messageRepository.findById(id), MessageDTO.class);
+    }
 }

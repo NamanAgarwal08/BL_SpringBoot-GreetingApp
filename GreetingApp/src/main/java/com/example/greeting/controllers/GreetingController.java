@@ -60,4 +60,10 @@ public class GreetingController {
         System.out.println("hello");
         return greetingService.saveMessage(message);
     }
+
+    //for UC5
+    @GetMapping("/find/{id}")
+    public MessageDTO findById(@PathVariable Long id){
+        return greetingService.findById(id);
+    }
 }
