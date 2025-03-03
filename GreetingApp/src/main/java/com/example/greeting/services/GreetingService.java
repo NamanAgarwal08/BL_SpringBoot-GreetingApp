@@ -6,7 +6,9 @@ import com.example.greeting.repositories.MessageRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GreetingService {
@@ -31,5 +33,9 @@ public class GreetingService {
 
     public MessageDTO findById(Long id) {
         return modelMapper.map(messageRepository.findById(id), MessageDTO.class);
+    }
+
+    public List<MessageDTO> findAllMessages() {
+        return messageRepository.findAll().stream().map(messageEntity -> modelMapper.map(messageEntity, MessageDTO.class)).toList();
     }
 }

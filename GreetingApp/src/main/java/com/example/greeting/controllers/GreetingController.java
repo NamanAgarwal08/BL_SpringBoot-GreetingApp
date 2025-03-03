@@ -5,6 +5,8 @@ import com.example.greeting.services.GreetingService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("greetings")
 public class GreetingController {
@@ -65,5 +67,11 @@ public class GreetingController {
     @GetMapping("/find/{id}")
     public MessageDTO findById(@PathVariable Long id){
         return greetingService.findById(id);
+    }
+
+    //for UC6
+    @GetMapping("/getAll")
+    public List<MessageDTO> findAllMessage(){
+        return greetingService.findAllMessages();
     }
 }
