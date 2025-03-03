@@ -1,11 +1,18 @@
 package com.example.greeting.controllers;
 
 import com.example.greeting.dto.MessageDTO;
+import com.example.greeting.services.GreetingService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("greetings")
 public class GreetingController {
+
+    final GreetingService greetingService;
+
+    public GreetingController(GreetingService greetingService) {
+        this.greetingService = greetingService;
+    }
 
     //for UC1
     @GetMapping("/get")
@@ -26,4 +33,9 @@ public class GreetingController {
 
 
 
+    //for UC2
+    @GetMapping("/service")
+    public String serviceGreetings(){
+        return greetingService.getGreetings();
+    }
 }
