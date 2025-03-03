@@ -1,5 +1,12 @@
 package com.example.greeting.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
 public class MessageDTO {
     private String message;
 
@@ -8,25 +15,6 @@ public class MessageDTO {
     public MessageDTO(String message) {
         this.message = message;
         this.id = null;
-    }
-
-    public void setId(Long id) {
-
-        this.id = id;
-    }
-
-    public Long getId() {
-
-        return id;
-    }
-
-    public void setMessage(String message) {
-
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
 }

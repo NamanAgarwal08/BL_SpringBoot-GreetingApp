@@ -53,4 +53,11 @@ public class GreetingController {
         else
             return "Hello World";
     }
+
+    //for UC4
+    @PostMapping("/save")
+    public MessageDTO saveMessage(@RequestBody MessageDTO message){
+        System.out.println("hello");
+        return greetingService.saveMessage(message);
+    }
 }
