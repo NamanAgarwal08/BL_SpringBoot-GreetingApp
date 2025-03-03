@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class GreetingService {
@@ -38,4 +37,15 @@ public class GreetingService {
     public List<MessageDTO> findAllMessages() {
         return messageRepository.findAll().stream().map(messageEntity -> modelMapper.map(messageEntity, MessageDTO.class)).toList();
     }
+
+    public boolean editById(Long id, String message) {
+        if(messageRepository.existsById(id)){
+            MessageEntity messageEntity = messageRepository.findById(id).get();
+            messageEntity.setMessage(message);
+            messageRepository.save(messageEntity);
+            return true;
+        }
+        return false;
+    }
+
 }
