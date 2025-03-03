@@ -74,4 +74,11 @@ public class GreetingController {
     public List<MessageDTO> findAllMessage(){
         return greetingService.findAllMessages();
     }
+
+    //for UC7
+    @PatchMapping("/edit/{id}")
+    public boolean editById(@PathVariable("id") Long id,
+                            @RequestBody String message){
+        return greetingService.editById(id, message);
+    }
 }
