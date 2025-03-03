@@ -48,4 +48,11 @@ public class GreetingService {
         return false;
     }
 
+    public boolean deleteById(Long id) {
+        if(messageRepository.existsById(id)){
+            messageRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

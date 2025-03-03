@@ -81,4 +81,10 @@ public class GreetingController {
                             @RequestBody String message){
         return greetingService.editById(id, message);
     }
+
+    //for UC8
+    @DeleteMapping("/delete/{id}")
+    public boolean deleteById(@PathVariable("id") Long id){
+        return greetingService.deleteById(id);
+    }
 }
