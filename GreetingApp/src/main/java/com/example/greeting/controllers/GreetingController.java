@@ -59,7 +59,7 @@ public class GreetingController {
     //for UC4
     @PostMapping("/save")
     public MessageDTO saveMessage(@RequestBody MessageDTO message){
-        System.out.println("hello");
+//        System.out.println("hello");
         return greetingService.saveMessage(message);
     }
 
@@ -78,8 +78,8 @@ public class GreetingController {
     //for UC7
     @PatchMapping("/edit/{id}")
     public boolean editById(@PathVariable("id") Long id,
-                            @RequestBody String message){
-        return greetingService.editById(id, message);
+                            @RequestBody MessageDTO messageDTO){
+        return greetingService.editById(id, messageDTO.getMessage());
     }
 
     //for UC8

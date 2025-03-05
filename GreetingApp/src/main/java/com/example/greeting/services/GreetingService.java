@@ -4,6 +4,7 @@ import com.example.greeting.dto.MessageDTO;
 import com.example.greeting.entities.MessageEntity;
 import com.example.greeting.repositories.MessageRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public class GreetingService {
 
     final MessageRepository messageRepository;
+
+    @Autowired
     private final ModelMapper modelMapper;
 
     public GreetingService(MessageRepository messageRepository, ModelMapper modelMapper) {

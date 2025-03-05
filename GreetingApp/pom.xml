@@ -70,6 +70,20 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+<!--		for bcrypt (hashing passwords)-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>3.1.0.RELEASE</version>
+		</dependency>
+
+<!--		for smtp services (sending email after registration)-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
