@@ -42,13 +42,10 @@ public class UserService {
         return userRepository.findAll().stream().map(userEntity -> modelMapper.map(userEntity, UserDTO.class)).collect(Collectors.toList());
     }
 
-    public String register(UserDTO userDTO) {
 
-//        List<UserEntity> lst = userRepository.findAll().stream().filter(userEntity -> userDTO.getEmail().equals(userEntity.getEmail())).collect(Collectors.toList());
-//
-//        if(lst.size()>0){
-//            return "Email id already exists!";
-//        }
+
+    //User Registration
+    public String register(UserDTO userDTO) {
 
         UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
         if(userEntity!=null){
@@ -66,7 +63,6 @@ public class UserService {
         userRepository.save(userEntity);
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-//        simpleMailMessage.setFrom(sender);
         simpleMailMessage.setTo(userDTO.getEmail());
         simpleMailMessage.setSubject("Registration Status");
         simpleMailMessage.setText("Your registration in Greeting App is successfully done!");
@@ -76,5 +72,8 @@ public class UserService {
         return "User registered successfully!";
 
     }
+
+    //User Login
+
 
 }
