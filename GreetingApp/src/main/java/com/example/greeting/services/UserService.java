@@ -1,12 +1,14 @@
 package com.example.greeting.services;
 
 import com.example.greeting.dto.LoginDTO;
+import com.example.greeting.dto.PasswordDTO;
 import com.example.greeting.dto.UserDTO;
 import com.example.greeting.entities.UserEntity;
 import com.example.greeting.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.regex.*;
 
 import static java.util.GregorianCalendar.BC;
 
@@ -70,7 +73,7 @@ public class UserService {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             simpleMailMessage.setTo(userDTO.getEmail());
             simpleMailMessage.setSubject("Registration Status");
-            simpleMailMessage.setText(userDTO.getFirstname()+",\n "+"Your registration in Greeting App is successfully done!");
+            simpleMailMessage.setText(userDTO.getFirstname()+",\n"+"Your registration in Greeting App is successfully done!");
 
             javaMailSender.send(simpleMailMessage);
         }catch(Exception e){
@@ -86,11 +89,11 @@ public class UserService {
     public String login(LoginDTO loginDTO) {
         UserEntity userEntity = userRepository.findByEmail(loginDTO.getEmail());
         if(userEntity==null){
-            return "Email does not exists.\nPlease register first";
+            return "Email does not exists!.\nPlease register first.";
         }
 
         if(!bCryptPasswordEncoder.matches(loginDTO.getPassword(), userEntity.getPassword())){
-            return "Enter correct password";
+            return "Enter correct password!";
         }
 
         String token = jsonWebTokenService.createToken(userEntity.getId());
@@ -98,4 +101,46 @@ public class UserService {
         return "Login successful!\nToken: " + token;
     }
 
+
+    //Forgot Password
+    public String forgotPassword(String email, PasswordDTO passwordDTO) {
+
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if(userEntity==null){
+            return "Email id does not exists!";
+        }
+
+        String newPassword = bCryptPasswordEncoder.encode(passwordDTO.getPassword());
+
+        userEntity.setPassword(newPassword);
+        userRepository.save(userEntity);
+
+        return "Password has been changed successfully!";
+
+    }
+
+    public String resetPassword(String email, String currentPass, String newPass) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if(userEntity==null){
+            return "Enter correct email!";
+        }
+
+        String hashCurrentPass = bCryptPasswordEncoder.encode(currentPass);
+        if(!bCryptPasswordEncoder.matches(currentPass,userEntity.getPassword())){
+            return "Current password does not match!";
+        }
+
+
+        Pattern p = Pattern.compile("^(?=.*[A-Z])(?=.*[@#$%^&*()\\-+=])(?=.*\\d).{8,}$");
+        Matcher m = p.matcher(newPass);
+        if(m.matches()){
+            String hashNewPass = bCryptPasswordEncoder.encode(newPass);
+            userEntity.setPassword(hashNewPass);
+            userRepository.save(userEntity);
+            return "Password reset successfully!";
+        }
+
+        return "Your password should have at least one uppercase letter, at least one special character, at least one digit and minimum 8 characters long.";
+
+    }
 }
