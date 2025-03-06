@@ -1,5 +1,6 @@
 package com.example.greeting.configuration;
 
+import com.example.greeting.services.JsonWebTokenService;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,11 @@ public class AppConfig {
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JsonWebTokenService getService(){
+        return new JsonWebTokenService();
     }
 
 }
