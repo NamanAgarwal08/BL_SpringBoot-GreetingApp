@@ -1,5 +1,6 @@
 package com.example.greeting.services;
 
+import com.example.greeting.dto.LoginDTO;
 import com.example.greeting.dto.UserDTO;
 import com.example.greeting.entities.UserEntity;
 import com.example.greeting.repositories.UserRepository;
@@ -22,9 +23,8 @@ public class UserService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    final UserRepository userRepository;
-
-    @Value("${spring.mail.username}") private String sender;
+    @Autowired
+    private final UserRepository userRepository;
 
     @Autowired
     private final ModelMapper modelMapper;
@@ -32,10 +32,14 @@ public class UserService {
     @Autowired
     private final PasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder bCryptPasswordEncoder) {
+    @Autowired
+    private final JsonWebTokenService jsonWebTokenService;
+
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder bCryptPasswordEncoder, JsonWebTokenService jsonWebTokenService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jsonWebTokenService = jsonWebTokenService;
     }
 
     public List<UserDTO> getAllUsers() {
@@ -49,7 +53,7 @@ public class UserService {
 
         UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
         if(userEntity!=null){
-            return "Email id already exists";
+            return "Email id already exists!";
         }
 
 
@@ -62,18 +66,36 @@ public class UserService {
         userEntity.setPassword(hashPass);
         userRepository.save(userEntity);
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(userDTO.getEmail());
-        simpleMailMessage.setSubject("Registration Status");
-        simpleMailMessage.setText("Your registration in Greeting App is successfully done!");
+        try{
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(userDTO.getEmail());
+            simpleMailMessage.setSubject("Registration Status");
+            simpleMailMessage.setText(userDTO.getFirstname()+",\n "+"Your registration in Greeting App is successfully done!");
 
-        javaMailSender.send(simpleMailMessage);
+            javaMailSender.send(simpleMailMessage);
+        }catch(Exception e){
+            return "Unable to send email!";
+        }
 
         return "User registered successfully!";
 
     }
 
-    //User Login
 
+    //User Login
+    public String login(LoginDTO loginDTO) {
+        UserEntity userEntity = userRepository.findByEmail(loginDTO.getEmail());
+        if(userEntity==null){
+            return "Email does not exists.\nPlease register first";
+        }
+
+        if(!bCryptPasswordEncoder.matches(loginDTO.getPassword(), userEntity.getPassword())){
+            return "Enter correct password";
+        }
+
+        String token = jsonWebTokenService.createToken(userEntity.getId());
+
+        return "Login successful!\nToken: " + token;
+    }
 
 }
